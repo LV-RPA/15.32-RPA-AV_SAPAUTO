@@ -1,0 +1,181 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>rpaSAP_PagoAutomatico.sikuli</h2> <a href="rpaSAP_PagoAutomatico.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+load(<span class="str">"mssql-jdbc-7.0.0.jre8.jar"</span>)
+<span class="kw">from</span> com.ziclix.python.sql <span class="kw">import</span> zxJDBC
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">import</span> sys
+<span class="kw">import</span> os
+<span class="kw">import</span> glob
+
+<span class="kw">print</span>(<span class="str">"INICIO RPA"</span>)
+<span class="cmt">###VARIABLES###</span>
+conn = None
+d, u, p, v = <span class="str">"jdbc:sqlserver://10.120.15.105"</span>, <span class="str">"ENVIRONMENT_DEV"</span>, <span class="str">"@env-DEV-2015$*"</span>, <span class="str">"com.microsoft.sqlserver.jdbc.SQLServerDriver"</span>
+
+user_sap = (<span class="str">"RPA_SAP"</span>)
+pass_sap = (<span class="str">"Anovo2020##"</span>)
+folder = <span class="str">"C:\Temp"</span>
+ultimacarga = False
+
+<span class="cmt">###VALIDAR ULTIMA CARGA###</span>
+<span class="kw">for</span> the_file <span class="kw">in</span> os.listdir(folder):
+    file_path = os.path.join(folder, the_file)
+
+    <span class="kw">if</span> file_path == <span class="str">"C:\Temp\CARGA OK.txt"</span>:
+        ultimacarga = True
+        <span class="kw">print</span>(ultimacarga)
+
+<span class="kw">if</span> ultimacarga == True:
+    <span class="kw">print</span>(<span class="str">"Todo Correcto, INICIAR"</span>)
+
+    <span class="kw">print</span>(<span class="str">"Cerrar procesos"</span>)
+    os.system(<span class="str">'taskkill /f /im saplogon.exe'</span>)
+
+    <span class="kw">print</span>(<span class="str">"abrir sap"</span>)
+    App.open(<span class="str">"C:\\Program Files (x86)\\SAP\\FrontEnd\\SAPgui\\saplogon.exe"</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+
+    <span class="skw">wait</span>(<img src="1570656444611.png" />,<span class="dig">120</span>)
+    <span class="skw">sleep</span>(<span class="dig">5</span>)
+    <span class="skw">doubleClick</span>(Pattern(<img src="1570656458416.png" />).targetOffset(-<span class="dig">1</span>,<span class="dig">12</span>))
+
+    <span class="kw">print</span>(<span class="str">"ingresar usuario"</span>)
+    <span class="skw">sleep</span>(<span class="dig">3</span>)
+    <span class="skw">wait</span>(Pattern(<img src="1562366742430.png" />).similar(<span class="dig">0.80</span>),<span class="dig">120</span>)
+    <span class="skw">sleep</span>(<span class="dig">3</span>)
+    paste(user_sap)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    <span class="skw">type</span>(Key.TAB)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    paste(pass_sap)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    <span class="skw">type</span>(Key.ENTER)
+    <span class="skw">sleep</span>(<span class="dig">5</span>)
+
+    <span class="kw">if</span> exists(<img src="1563297931934.png" />,<span class="dig">10</span>):
+        <span class="skw">click</span>(Pattern(<img src="1563983954890.png" />).targetOffset(-<span class="dig">210</span>,-<span class="dig">32</span>))
+        <span class="skw">click</span>(Pattern(<img src="1563298018150.png" />).targetOffset(-<span class="dig">12</span>,<span class="dig">1</span>))
+        <span class="skw">sleep</span>(<span class="dig">10</span>)
+
+    <span class="kw">if</span> exists(<img src="1578760278198.png" />,<span class="dig">10</span>):
+        <span class="skw">sleep</span>(<span class="dig">2</span>)
+        <span class="skw">click</span>(<img src="1578760330541.png" />)
+        <span class="skw">sleep</span>(<span class="dig">10</span>)
+
+    <span class="kw">print</span>(<span class="str">"buscar ruta"</span>)
+    <span class="skw">wait</span>(Pattern(<img src="1562366972939.png" />).similar(<span class="dig">0.80</span>),<span class="dig">120</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    <span class="skw">type</span>(Pattern(<img src="1562367026334-2.png" />).targetOffset(<span class="dig">21</span>,<span class="dig">1</span>),<span class="str">"ZMVT_NS_PE"</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    <span class="skw">type</span>(Key.ENTER)
+
+
+
+    <span class="kw">try</span>:
+        conn = zxJDBC.connect(d, u, p, v)
+        cursor = conn.cursor()
+        cursor.execute(<span class="str">"use RUTINAS_DEV exec ObtenerOCpendientesPagoAutomatico"</span>)
+        <span class="kw">print</span>(<span class="str">"conectado"</span>)
+
+        <span class="kw">for</span> x <span class="kw">in</span> cursor.fetchall():
+            <span class="kw">print</span>(x)
+
+
+        <span class="kw">else</span>:
+            <span class="kw">print</span>(<span class="str">"FIN RPA"</span>)
+            archi1=open(<span class="str">"C:\Rutinas\CARGA OK.txt"</span>,<span class="str">"w"</span>)
+            archi1.close()
+
+    <span class="kw">except</span>:
+        exc_type, exc_val, exc_tb = sys.exc_info()
+
+        ErrorText = <span class="str">"***** ERROR IN SCRIPTNAME = "</span> + sys.argv[<span class="dig">0</span>] + <span class="str">" *****\n"</span>
+        ErrorText += <span class="str">"Date/Time : "</span> + str(datetime.now()) + <span class="str">"\n"</span>
+        ErrorText += <span class="str">"Line Number: "</span> + str(exc_tb.tb_lineno) + <span class="str">"\n"</span>
+        ErrorText += <span class="str">"Error Type : "</span> + exc_type.__name__ + <span class="str">"\n"</span>
+        ErrorText += <span class="str">"Error Value: "</span> + exc_val.message + <span class="str">"\n"</span>
+        ErrorText += <span class="str">"***************************************************************\n\r"</span>
+        <span class="kw">print</span> ErrorText
+        conn.close()
+        <span class="kw">print</span>(<span class="str">"ERROR, conexion cerrada"</span>)
+
+    <span class="kw">finally</span>:
+        conn.close()
+        <span class="kw">print</span>(<span class="str">"conexion cerrada"</span>)
+
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="str">"ERROR CON LA ULTIMA EJECUCION"</span>)
+    <span class="kw">print</span>(<span class="str">"MEY DEY, MEY DEY"</span>)
+</pre>
+</body>
+</html>
